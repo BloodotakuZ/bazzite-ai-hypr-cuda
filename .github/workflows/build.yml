@@ -19,14 +19,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up BlueBuild
-        uses: blue-build/actions/setup@v1
-
-      - name: Build image from recipe
-        run: blue-build build recipes/recipe.yml
-
-      - name: Push image to GHCR
-        env:
-          GHCR_IMAGE: ghcr.io/BloodotakuZ/bazzite-ai-hypr-cuda
-        run: blue-build push recipes/recipe.yml --image $GHCR_IMAGE
-
+      - name: Build image using BlueBuild
+        uses: blue-build/github-action@v1
+        with:
+          recipe: recipes/recipe.yml
+          registry: ghcr.io
+          namespace: BloodotakuZ
+          image: bazzite-ai-hypr-cuda
