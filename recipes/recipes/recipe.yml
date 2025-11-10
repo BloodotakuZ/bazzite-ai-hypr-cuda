@@ -39,6 +39,7 @@ modules:
   - type: script
     scripts:
       - name: hyprland-and-jakoolit
+        description: "Install Hyprland and copy Jakoolit dotfiles for new users"
         content: |
           set -euo pipefail
           rpm-ostree install \
@@ -62,6 +63,7 @@ modules:
   - type: script
     scripts:
       - name: cuda-repo-and-toolkit
+        description: "Install CUDA Toolkit from NVIDIA repo (auto-detect Fedora VERSION_ID)"
         content: |
           set -euo pipefail
           FEDVER="$(. /etc/os-release && echo ${VERSION_ID})"
@@ -86,6 +88,7 @@ modules:
   - type: script
     scripts:
       - name: tensorrt-cudnn-pytorch
+        description: "Install TensorRT/cuDNN and create PyTorch CUDA virtualenv"
         content: |
           set -euo pipefail
           FEDVER="$(. /etc/os-release && echo ${VERSION_ID})"
@@ -113,6 +116,7 @@ modules:
   - type: script
     scripts:
       - name: fooocus-comfyui-setup
+        description: "Install Fooocus & ComfyUI with CUDA wheels and pre-download models"
         content: |
           set -euo pipefail
 
@@ -182,6 +186,7 @@ modules:
   - type: script
     scripts:
       - name: enable-auto-updates
+        description: "Enable automatic updates for rpm-ostree and containers"
         content: |
           systemctl enable gamemoded.service || true
           systemctl enable rpm-ostreed-automatic.timer
