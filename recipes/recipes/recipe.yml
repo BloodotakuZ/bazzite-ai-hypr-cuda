@@ -41,8 +41,10 @@ modules:
     description: "Install Hyprland and copy Jakoolit dotfiles for new users"
     script: |
       set -euo pipefail
-      rpm-ostree install hyprland waybar rofi mako wlogout swaylock-effects \
-        hyprpaper hypridle hyprshot foot wl-clipboard grim slurp thunar file-roller \        blueman gvfs gvfs-fuse xdg-desktop-portal-hyprland neovim kitty network-manager-applet
+      rpm-ostree install \
+        hyprland waybar rofi mako wlogout swaylock-effects \
+        hyprpaper hypridle hyprshot foot wl-clipboard grim slurp thunar file-roller \
+        blueman gvfs gvfs-fuse xdg-desktop-portal-hyprland neovim kitty network-manager-applet
 
       git clone https://github.com/jakoolit/Hyprland-Dots.git /tmp/hyprdots
       mkdir -p /etc/skel/.config
@@ -61,18 +63,18 @@ modules:
     description: "Install CUDA Toolkit from NVIDIA repo (auto-detect Fedora VERSION_ID)"
     script: |
       set -euo pipefail
-      FEDVER="$(. /etc/os-release && echo ${{VERSION_ID}})"
+      FEDVER="$(. /etc/os-release && echo ${VERSION_ID})"
       echo "Detected Fedora VERSION_ID=$FEDVER"
-      CUDA_REPO_URL="https://developer.download.nvidia.com/compute/cuda/repos/fedora${{FEDVER}}/x86_64/cuda-fedora${{FEDVER}}.repo"
+      CUDA_REPO_URL="https://developer.download.nvidia.com/compute/cuda/repos/fedora${FEDVER}/x86_64/cuda-fedora${FEDVER}.repo"
       echo "Adding CUDA repo: $CUDA_REPO_URL"
       curl -fsSL "$CUDA_REPO_URL" -o /etc/yum.repos.d/cuda.repo || { echo "Failed to add CUDA repo for Fedora $FEDVER"; exit 1; }
       rpm-ostree install cuda-toolkit
 
-      cat << 'EOF' > /etc/profile.d/cuda.sh
+      cat <<'EOS' > /etc/profile.d/cuda.sh
       export PATH=/usr/local/cuda/bin:$PATH
       export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
       export CUDA_CACHE_PATH=/var/cache/cuda
-      EOF
+      EOS
       chmod +x /etc/profile.d/cuda.sh
       mkdir -p /var/cache/cuda && chmod 777 /var/cache/cuda
 
@@ -81,8 +83,8 @@ modules:
     description: "Install TensorRT/cuDNN and create PyTorch CUDA virtualenv"
     script: |
       set -euo pipefail
-      FEDVER="$(. /etc/os-release && echo ${{VERSION_ID}})"
-      ML_REPO_URL="https://developer.download.nvidia.com/compute/machine-learning/repos/fedora${{FEDVER}}/x86_64/nvidia-machine-learning.repo"
+      FEDVER="$(. /etc/os-release && echo ${VERSION_ID})"
+      ML_REPO_URL="https://developer.download.nvidia.com/compute/machine-learning/repos/fedora${FEDVER}/x86_64/nvidia-machine-learning.repo"
       echo "Adding NVIDIA ML repo: $ML_REPO_URL"
       curl -fsSL "$ML_REPO_URL" -o /etc/yum.repos.d/nvidia-ml.repo || { echo "Failed to add NVIDIA ML repo"; exit 1; }
       rpm-ostree install tensorrt-devel tensorrt-libs cudnn cudnn-devel cuda-nvml-devel cuda-nvrtc-devel
@@ -94,9 +96,9 @@ modules:
       pip install torch torchvision torchaudio xformers --extra-index-url https://download.pytorch.org/whl/cu121
       deactivate
 
-      cat << 'EOF' > /etc/profile.d/pytorch_env.sh
+      cat <<'EOS' > /etc/profile.d/pytorch_env.sh
       export PATH=/opt/torch-venv/bin:$PATH
-      EOF
+      EOS
       chmod +x /etc/profile.d/pytorch_env.sh
 
   # 🤖 Fooocus install + ComfyUI install + pre-cache SDXL models
@@ -137,29 +139,33 @@ modules:
 
       # --- Pre-download models ---
       mkdir -p /opt/fooocus/models /opt/comfyui/models/checkpoints /opt/comfyui/models/controlnet
-      aria2c -x 8 -d /opt/fooocus/models -o sdxl_base_1.0.safetensors \        https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sdxl_base_1.0.safetensors || true
-      aria2c -x 8 -d /opt/fooocus/models -o sdxl_refiner_1.0.safetensors \        https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sdxl_refiner_1.0.safetensors || true
-      aria2c -x 8 -d /opt/fooocus/models -o sdxl_vae.safetensors \        https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors || true
-      aria2c -x 8 -d /opt/comfyui/models/controlnet -o controlnet_canny.safetensors \        https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11p_sd15_canny.safetensors || true
+      aria2c -x 8 -d /opt/fooocus/models -o sdxl_base_1.0.safetensors \
+        https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sdxl_base_1.0.safetensors || true
+      aria2c -x 8 -d /opt/fooocus/models -o sdxl_refiner_1.0.safetensors \
+        https://huggingface.co/stabilityai/stable-diffusion-xl-refiner-1.0/resolve/main/sdxl_refiner_1.0.safetensors || true
+      aria2c -x 8 -d /opt/fooocus/models -o sdxl_vae.safetensors \
+        https://huggingface.co/madebyollin/sdxl-vae-fp16-fix/resolve/main/sdxl_vae.safetensors || true
+      aria2c -x 8 -d /opt/comfyui/models/controlnet -o controlnet_canny.safetensors \
+        https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11p_sd15_canny.safetensors || true
 
       # Desktop launchers
-      cat << 'EOF' > /usr/share/applications/fooocus.desktop
+      cat <<'EOS' > /usr/share/applications/fooocus.desktop
       [Desktop Entry]
       Name=Fooocus
       Exec=bash -c "cd /opt/fooocus && ./venv/bin/python entry_with_update.py"
       Type=Application
       Icon=applications-graphics
       Categories=Graphics;AI;
-      EOF
+      EOS
 
-      cat << 'EOF' > /usr/share/applications/comfyui.desktop
+      cat <<'EOS' > /usr/share/applications/comfyui.desktop
       [Desktop Entry]
       Name=ComfyUI
       Exec=bash -c "cd /opt/comfyui && ./venv/bin/python main.py --cuda --listen 127.0.0.1 --port 8188"
       Type=Application
       Icon=applications-graphics
       Categories=Graphics;AI;
-      EOF
+      EOS
 
       chmod -R 755 /opt/fooocus /opt/comfyui
 
