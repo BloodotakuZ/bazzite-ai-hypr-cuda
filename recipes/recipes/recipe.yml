@@ -40,7 +40,7 @@ modules:
     scripts:
       - name: hyprland-and-jakoolit
         description: "Install Hyprland and copy Jakoolit dotfiles for new users"
-        content: |
+        script: |
           set -euo pipefail
           rpm-ostree install \
             hyprland waybar rofi mako wlogout swaylock-effects \
@@ -64,7 +64,7 @@ modules:
     scripts:
       - name: cuda-repo-and-toolkit
         description: "Install CUDA Toolkit from NVIDIA repo (auto-detect Fedora VERSION_ID)"
-        content: |
+        script: |
           set -euo pipefail
           FEDVER="$(. /etc/os-release && echo ${VERSION_ID})"
           echo "Detected Fedora VERSION_ID=$FEDVER"
@@ -89,7 +89,7 @@ modules:
     scripts:
       - name: tensorrt-cudnn-pytorch
         description: "Install TensorRT/cuDNN and create PyTorch CUDA virtualenv"
-        content: |
+        script: |
           set -euo pipefail
           FEDVER="$(. /etc/os-release && echo ${VERSION_ID})"
           ML_REPO_URL="https://developer.download.nvidia.com/compute/machine-learning/repos/fedora${FEDVER}/x86_64/nvidia-machine-learning.repo"
@@ -117,7 +117,7 @@ modules:
     scripts:
       - name: fooocus-comfyui-setup
         description: "Install Fooocus & ComfyUI with CUDA wheels and pre-download models"
-        content: |
+        script: |
           set -euo pipefail
 
           # --- Fooocus ---
@@ -187,7 +187,7 @@ modules:
     scripts:
       - name: enable-auto-updates
         description: "Enable automatic updates for rpm-ostree and containers"
-        content: |
+        script: |
           systemctl enable gamemoded.service || true
           systemctl enable rpm-ostreed-automatic.timer
           systemctl enable podman-auto-update.timer
