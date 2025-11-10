@@ -2,7 +2,7 @@ name: Build Latest Bazzite NVIDIA DX Image
 
 on:
   schedule:
-    - cron: "0 6 * * 1"  # Every Monday @ 06:00 UTC
+    - cron: "0 6 * * 1"
   push:
     branches: [ main ]
   workflow_dispatch:
@@ -19,9 +19,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 🧰 Build and push the image (no signing)
       - name: Build and push image without signing
-        uses: blue-build/github-action@latest
+        uses: blue-build/github-action@v1
         with:
           recipe: recipes/recipe.yml
           registry: ghcr.io
