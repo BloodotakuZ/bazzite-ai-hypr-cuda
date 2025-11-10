@@ -19,12 +19,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 🧰 Build and push the image (no signing)
       - name: Build and push image without signing
-        uses: blue-build/github-action@v1
+        uses: blue-build/github-action@latest
         with:
           recipe: recipes/recipe.yml
           registry: ghcr.io
           namespace: BloodotakuZ
           image: bazzite-ai-hypr-cuda
           push: true
-          sign: false   # 👈 disables cosign signing completely
+          extra-args: "--no-sign"
