@@ -2,7 +2,7 @@ name: Build and Sign Bazzite NVIDIA DX Image
 
 on:
   schedule:
-    - cron: "0 6 * * 1"  # Every Monday @ 06:00 UTC
+    - cron: "0 6 * * 1"
   push:
     branches: [ main ]
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
       - name: Build and push signed image
         uses: blue-build/github-action@v1
         with:
-          recipe: recipes/recipe.yml
+          recipe: recipes/recipe.yml    # ✅ correct path
           registry: ghcr.io
           namespace: BloodotakuZ
           image: bazzite-ai-hypr-cuda
