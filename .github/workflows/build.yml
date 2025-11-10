@@ -2,7 +2,7 @@ name: Build Latest Bazzite NVIDIA DX Image
 
 on:
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "0 6 * * 1"  # Every Monday @ 06:00 UTC
   push:
     branches: [ main ]
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build and push image with BlueBuild (no signing)
+      - name: Build and push image without signing
         uses: blue-build/github-action@v1
         with:
           recipe: recipes/recipe.yml
@@ -27,4 +27,4 @@ jobs:
           namespace: BloodotakuZ
           image: bazzite-ai-hypr-cuda
           push: true
-          sign: false
+          sign: false   # 👈 disables cosign signing completely
