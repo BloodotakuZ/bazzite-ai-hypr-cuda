@@ -1,0 +1,30 @@
+name: Build Latest Bazzite NVIDIA DX Image
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Every Monday @ 06:00 UTC
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up BlueBuild
+        uses: blue-build/setup-action@v1
+
+      - name: Build image
+        run: blue-build build recipes/recipe.yml
+
+      - name: Push image to GHCR
+        env:
+          GHCR_IMAGE: ghcr.io/BloodotakuZ/bazzite-ai-hypr-cuda
+        run: blue-build push recipes/recipe.yml --image $GHCR_IMAGE
