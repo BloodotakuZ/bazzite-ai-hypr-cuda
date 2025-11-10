@@ -19,10 +19,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build image using BlueBuild
+      - name: Build and push image with BlueBuild (no signing)
         uses: blue-build/github-action@v1
         with:
           recipe: recipes/recipe.yml
           registry: ghcr.io
           namespace: BloodotakuZ
           image: bazzite-ai-hypr-cuda
+          push: true
+          sign: false
